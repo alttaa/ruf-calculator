@@ -1,1 +1,1 @@
-# R U F***ed — poker probability calculator
+# R U F***ed — poker equity calculator
