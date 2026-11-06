@@ -1,1 +1,51 @@
 # R U F***ed — poker equity calculator
+
+scope/plan: 
+
+
+
+
+
+proj tree - prototype: 
+
+ruf-calculator/
+├── CLAUDE.md                 # project plan, read by Claude Code every session
+├── README.md                 # front page of the repo on GitHub
+├── .gitignore                # files Git never tracks
+├── python/                   # math prototype + tests
+│   ├── requirements.txt      # package list (pip freeze > requirements.txt)
+│   ├── .venv/                # virtual environment (ignored by Git)
+│   ├── src/
+│   │   └── ruf/
+│   │       ├── __init__.py   # marks "ruf" as a package
+│   │       ├── cards.py      # Card, Deck, parse "Js" -> card
+│   │       ├── evaluator.py  # rank a 5-7 card hand
+│   │       └── beat_list.py  # count opponent hands that win
+│   └── tests/
+│       ├── test_cards.py
+│       ├── test_evaluator.py
+│       └── test_beat_list.py # the 38/1081 check lives here
+└── web/                      # React site (added at milestone 4)
+    └── src/
+        ├── components/       # UI pieces (card picker, results table)
+        └── engine/           # maths ported from python/src/ruf/
+
+
+
+
+
+
+BUILD ORDER/PRIORITY: 
+Build order (each file depends on the ones above it)
+----------------------------------------------------
+1. cards.py      needs: nothing         job: represent cards and the deck
+2. evaluator.py  needs: cards           job: decide which hand is better
+3. beat_list.py  needs: cards, evaluator  job: the actual RUF answer
+
+
+
+
+ELSE: 
+- src/   = the real code. tests/ = proof it works. Everything else at top level.
+- utils.py: only add one when a helper doesn't fit any named file.
+- Empty folders are not tracked by Git; web/ appears once it has files.
