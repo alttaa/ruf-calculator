@@ -1,0 +1,56 @@
+FULL SCOPE OF PROJECT? 
+
+--> Leela Chess Zero (LC0) (open source alpha zero). --> apple to poker\
+Differences 
+- chess --> perfect information
+- poker --> imperfect information 
+
+
+Techniques
+- this perfect/imperect information makes it such that alpha-zero MCTS fails in poker
+--> https://ijcai.org/proceedings/2019/0176.pdf
+
+
+-- THUS instead of NN + MCTS. --> use NN with "counter factual Regret Minimization" (NN-CFR) 
+--> NOTE: cons -- bad cuz new theory -- hard 
+
+INSTEAD: 
+-- 
+2. Resolving Imperfect Information: Information Set MCTS
+
+If you specifically want to use MCTS (the backbone of Lc0) rather than standard CFR, you have to use Information Set MCTS (IS-MCTS).
+• In chess MCTS, a node in the search tree is a specific board position.
+• In poker MCTS, a node is an "Information Set"—the combination of your exact cards and the public community cards, mixed with a probability distribution of what cards your opponent might hold.
+A notable bridge between these two worlds is Player of Games (developed by Google DeepMind in 2021) and its successor Student of Games (2023). These systems explicitly unify perfect and imperfect information games into a single algorithm by combining MCTS with counterfactual value updates, proving that the AlphaZero approach can be adapted to poker.
+
+-------
+
+
+
+Yes, there are several open-source codebases and research builds that actively merge the Neural Network + Self-Play (or CFR) architectures specifically for poker. While there is no single monolithic client like "Leela Chess Zero" that everyone downloads to run a desktop poker GUI, the community has built several highly powerful, specialized engines.
+Depending on whether you want an implementation of DeepMind's unified algorithm, a pure Deep-CFR engine, or a real-time solver, the best current builds include:
+
+1. The Direct Parallel: Student of Games (SoG)
+
+If you want the literal evolution of AlphaZero adapted for poker, this is it. DeepMind published Student of Games, which uses Growing-Tree CFR (GT-CFR) and self-play to train value-and-policy neural networks. It successfully solved both perfect information games (Chess, Go) and imperfect information games (Heads-Up No-Limit Texas Hold'em). [1] (https://arxiv.org/abs/2112.03178), [2] (https://www.science.org/doi/10.1126/sciadv.adg3256)
+• Active Build: You can find community implementations like the moscars/student-of-games Github Repository. It is built in C++, relies on LibTorch (PyTorch's C++ frontend), and supports training via CUDA or Apple Silicon's Metal Performance Shaders (MPS). [1] (https://github.com/moscars/student-of-games)
+
+2. The GTO Solvers: Real-Time Neural Approximators
+
+If you want something closer to a blazing-fast post-flop equity and strategy calculator, several developers have open-sourced Deep-CFR wrappers designed to mimic commercial tools like PioSolver or GTO Wizard using neural networks:
+• griff-ui/poker-ai: An open-source GTO poker solver built from scratch using Deep CFR. It trains a neural network strategy approximation during self-play. Once trained, the network handles real-time search decisions in about 75 milliseconds, demonstrating the exact speed advantage of using a neural network over raw tree calculations. [1] (https://github.com/griff-ui/poker-ai)
+• Jotaeme961/gto-poker-solver-arena: A comprehensive GTO trainer suite that simulates thousands of board textures and uses reinforcement learning loops to evaluate range equity and strategy. [1] (https://github.com/Jotaeme961/gto-poker-solver-arena)
+• bupticybee/TexasSolver: While more of a traditional rapid-tree solver written in highly optimized C++, it serves as the algorithmic "ground truth" engine that many developers hook up to neural networks to generate training data. [1] (https://github.com/topics/texas-holdem-poker)
+
+3. Production Pipelines: Rust & PyTorch Prototypes
+
+For developers looking to see how a production-grade machine learning pipeline handles the massive card state abstractions:
+• Talibus (Rust/PyTorch): A highly regarded research prototype for 6-max No-Limit Hold'em. It uses a blazing-fast Rust simulation stack to handle imperfect information states, runs a Deep-CFR traversal engine to generate self-play samples, trains the models in Python/PyTorch, and exports them via ONNX back to Rust for near-instant inference. [1] (https://www.reddit.com/r/learnmachinelearning/comments/1tltrlm/i_built_a_rustpytorch_poker_ai_research_prototype/)
+
+Architectural Reality Check
+
+If you dive into these repositories, note that card abstraction is the biggest hurdle. In chess, a neural network looks at an 8x8 grid. In poker, looking at a hand like K♦ 7♣ 3♥ 2♠ requires lossy or lossless indexing (bucketing similar card textures together) so the neural network doesn't experience "combinatorial explosion" trying to learn all 2.59 million possible 5-card combinations individually. The repositories above show exactly how they solved this. [1] (https://github.com/jeffelin/CFR_pokerbot)
+Are you looking to clone a project to train your own network from scratch to test hyperparameters, or do you want a pre-trained engine to use as an analytical tool?
+
+
+-----------------------------------
