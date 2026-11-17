@@ -9,3 +9,4 @@
 | 2026-11-11 | Vite + React + TS | Next.js | Fewer concepts while learning React |
 | 2026-11-11 | Write own evaluator first, `treys` as cross-check | Library only | Learning; treys catches bugs |
 | 2026-11-11 | Cap RUF scope at Phase 4 (ship); game theory shelved | Full R&D Levels 1–5 | RUF is a learn-to-ship side project; end goal is EBMs/MLIPs (docs/SCOPE.md) |
+| 2026-11-12 | src layout (`python/src/ruf_engine/`) + `pyproject.toml`, editable install | Flat layout (package next to tests) | Tests import the installed package, not whatever is in the cwd; standard modern packaging |
